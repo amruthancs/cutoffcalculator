@@ -3,7 +3,7 @@
     "background_color": "#ffffff",
     "display": "standalone",
     "scope": "/",
-    "start_url": "https://amruthancs.github.io/cutoffcalculator/cutoffcalculator.html",
+    "start_url": "https://amruthancs.github.io/cutoffcalculator/",
     "name": "Cutoff Calculator",
     "short_name": "cutoff",
     "description": "Mechanical Engineer as Dev",
