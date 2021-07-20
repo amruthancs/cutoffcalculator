@@ -160,9 +160,9 @@ function multiplyBy()
 }</script>
 <script>
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/cutoffcalculator/service-worker.js');
-}
+if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('/cutoffcalculator/sw.js', {scope: '/cutoffcalculator/'})
+  }
 	</script>
 
 </body>
