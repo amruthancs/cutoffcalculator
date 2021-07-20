@@ -1,54 +1,59 @@
-// PWA Fire Bundle
-                      
-        // after a service worker is installed and the user navigates to a different page or 
-        // refreshes,the service worker will begin to receive fetch events
-                          
-        self.addEventListener('fetch', function(event) {
-        event.respondWith(caches.open('cache').then(function(cache) {
-        return cache.match(event.request).then(function(response) {
-        console.log("cache request: " + event.request.url);
-        var fetchPromise = fetch(event.request).then(function(networkResponse) {           
-        // if we got a response from the cache, update the cache                   
-        console.log("fetch completed: " + event.request.url, networkResponse);
-        if (networkResponse) {
-            console.debug("updated cached page: " + event.request.url, networkResponse);
-              cache.put(event.request, networkResponse.clone());}
-              return networkResponse;
-                  }, function (event) {   
-        // rejected promise - just ignore it, we're offline!   
-                  console.log("Error in fetch()", event);
-                  event.waitUntil(
-                  caches.open('cache').then(function(cache) { 
-        // our cache is named *cache* in the caches.open() above
-                  return cache.addAll
-                  ([            
-        //cache.addAll(), takes a list of URLs, then fetches them from the server
-        // and adds the response to the cache.           
-        // add your entire site to the cache- as in the code below; for offline access
-        // If you have some build process for your site, perhaps that could 
-        // generate the list of possible URLs that a user might load.               
-                '/', // do not remove this
-                '/index.html', //default
-                '/index.html?homescreen=1', //default
-                '/?homescreen=1', //default
-                '/assets/css/main.css',// configure as by your site ; just an example
-                '/images/*',// choose images to keep offline; just an example
-        // Do not replace/delete/edit the manifest.js paths below
-        //These are links to the extenal social media buttons that should be cached;
-        // we have used twitter's as an example
-              'https://platform.twitter.com/widgets.js',       
-                ]);
-                })
-                );
-                });
-        // respond from the cache, or the network
-          return response || fetchPromise;
+const PRECACHE = 'precache-v1';
+const RUNTIME = 'runtime';
+
+// A list of local resources we always want to be cached.
+const PRECACHE_URLS = [
+  'index.html',
+  './', // Alias for index.html
+  'styles.css',
+  '../../styles/main.css',
+  'demo.js'
+];
+
+// The install handler takes care of precaching the resources we always need.
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(PRECACHE)
+      .then(cache => cache.addAll(PRECACHE_URLS))
+      .then(self.skipWaiting())
+  );
+});
+
+// The activate handler takes care of cleaning up old caches.
+self.addEventListener('activate', event => {
+  const currentCaches = [PRECACHE, RUNTIME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return cacheNames.filter(cacheName => !currentCaches.includes(cacheName));
+    }).then(cachesToDelete => {
+      return Promise.all(cachesToDelete.map(cacheToDelete => {
+        return caches.delete(cacheToDelete);
+      }));
+    }).then(() => self.clients.claim())
+  );
+});
+
+// The fetch handler serves responses for same-origin resources from a cache.
+// If no response is found, it populates the runtime cache with the response
+// from the network before returning it to the page.
+self.addEventListener('fetch', event => {
+  // Skip cross-origin requests, like those for Google Analytics.
+  if (event.request.url.startsWith(self.location.origin)) {
+    event.respondWith(
+      caches.match(event.request).then(cachedResponse => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        return caches.open(RUNTIME).then(cache => {
+          return fetch(event.request).then(response => {
+            // Put a copy of the response in the runtime cache.
+            return cache.put(event.request, response.clone()).then(() => {
+              return response;
+            });
+          });
         });
-        }));
-        });
-        
-        self.addEventListener('install', function(event) {
-          // The promise that skipWaiting() returns can be safely ignored.
-          self.skipWaiting();
-          console.log("Latest version installed!");
-        });
+      })
+    );
+  }
+});
