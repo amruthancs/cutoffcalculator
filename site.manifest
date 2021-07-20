@@ -2,7 +2,7 @@
     "theme_color": "#000000",
     "background_color": "#ffffff",
     "display": "standalone",
-    "scope": "./",
+    "scope": "https://amruthancs.github.io/cutoffcalculator/",
     "start_url": "https://amruthancs.github.io/cutoffcalculator/cutoffcalculator.html",
     "name": "Cutoff Calculator",
     "short_name": "cutoff",
