@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+form {border: 3px solid #f1f1f1;}
+
+input[type=text], input[type=email], select {
+  width: 49%;
+  font-size:20px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+}
+
+img.avatar {
+  width: 20%;
+  border-radius: 50%;
+}
+#calc
+{
+background:#5a9ee7;
+border-radius:10px;
+display:none;
+color:white;
+max-width:390px;
+margin:0 auto;
+}
+p{
+padding:10px;
+}
+.container {
+  padding: 16px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+  .cancelbtn {
+     width: 100%;
+  }
+}
+</style>
+</head>
+<body style="background:#e19209;">
+
+<center><h1 style="color:#fff">Calculate your cutoff</h1><h1> All the best for your future</h1></center>
+
+<form id="form" target="_self" onsubmit="return postToGoogle();" action="" autocomplete="off"> 
+<input id="nameField" name="entry.920536133" placeholder="Enter your name" type="text" required> 
+<input id="emailField" name="entry.761262849" placeholder="Enter your email" type="email" required> 
+<input id="mobField" name="entry.829885462" placeholder="Enter your 10 Digit Phone Number" type="text" pattern="^\d{10}$" required>  
+<select id="cinema" name="entry.27848257" placeholder="Select course stream" required>
+<option value="">Select your course</option>
+<option value="Biology Maths Physics">Biology Maths Physics</option>
+<option value="Maths Physics Chemistry">Maths Physics Chemistry</option> 
+</select> 
+<button id="send" type="submit" class="common_btn">PROCEED TO CALCULATE CUTOFF</button>
+
+</form>
+
+<h3 id="success-msg" style="text-align: center !important; margin-top:100px !important; display:none; color:#fff"> Enter your marks to calculate the cutoff</h3>
+<div id="calc"> 
+<p>Maths: <input type="text" name="sub1" id="Maths" required/><br></p>
+<p>Physics : <input type="text" name="sub2" id="Physics" required/><br></p>
+<p>Chemistry : <input type="text" name="sub3" id="Chemistry" required/><br></p>
+<button type="submit" onClick="multiplyBy()" Value="Find my cutoff" <button/>
+<p>Click here to know Your cutoff: <span id = "result"></span></p></div>
+
+<script>
+function postToGoogle() {
+                var field1 = $("#nameField").val();
+                var field2 = $("#emailField").val();
+                var field3 = $("#mobField").val();
+                var field4 = $("#cinema option:selected").text();
+ 				
+				if(field1 == ""){
+					alert('Please Fill Your Name');
+					document.getElementById("nameField").focus();
+					return false;
+				}
+				if(field2 == ""){
+					alert('Please Fill Your Email');
+					document.getElementById("emailField").focus();
+					return false;
+				}
+				if(field3 == "" || field3.length > 10 || field3.length < 10){
+					alert('Please Fill Your Mobile Number');
+					document.getElementById("mobField").focus();
+					return false;
+				}
+				
+	
+                $.ajax({
+                    url: "https://docs.google.com/forms/d/e/1FAIpQLSdZRRwzCQr87ouJr07lqP7TJXqqkMlJK5P7q0kmSgAFsus4ZA/formResponse?",
+					data: {"entry.920536133": field1, "entry.761262849": field2, "entry.829885462": field3, "entry.27848257": field4},
+                    type: "POST",
+                    dataType: "xml",
+                    success: function(d)
+					{
+					},
+					error: function(x, y, z)
+						{
+
+							$('#success-msg').show();
+							$('#calc').show();
+							$('#form').hide();
+							
+						}
+                });
+				return false;
+            }
+</script>
+<script>
+function multiplyBy()
+{
+        num1 = document.getElementById("Maths").value;
+        num2 = document.getElementById("Physics").value;
+        num3 = document.getElementById("Chemistry").value;
+        document.getElementById("result").innerHTML = +num1 + +(num2*1/2) + +(num3*1/2);
+}
+</script>
+</body>
+</html>
