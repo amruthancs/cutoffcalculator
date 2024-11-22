@@ -8,7 +8,7 @@
 
 <style>
 body {font-family: Arial, Helvetica, sans-serif;}
-form {border: 3px solid #f1f1f1;}
+form {border: 3px solid #f1f1f1;padding: 20px;}
 
 input[type=text], input[type=email], select {
   width: 49%;
@@ -27,7 +27,8 @@ button {
   margin: 8px 0;
   border: none;
   cursor: pointer;
-  width: 100%;
+  max-width: 100%;
+  background-color: #534caf;
 }
 
 button:hover {
@@ -82,9 +83,9 @@ span.psw {
 }
 </style>
 </head>
-<body style="background:#e19209;">
+<body style="background: #6780e3;">
 
-<center><h1 style="color:#fff">Calculate your cutoff</h1><h1> All the best for your future</h1></center>
+<center><h1 style="color:#fff;font-family: cursive;">Calculate your cutoff</h1><h1> All the best for your future</h1></center>
 
 <form id="form" target="_self" onsubmit="return postToGoogle();" action="" autocomplete="off"> 
 <input id="nameField" name="entry.920536133" placeholder="Name" type="text" required> 
@@ -95,8 +96,9 @@ span.psw {
 <option value="Biology Maths Physics">Biology Maths Physics</option>
 <option value="Maths Physics Chemistry">Maths Physics Chemistry</option> 
 </select> 
+<div style="display: flex; align-items:center;justify-content:center;">
 <button id="send" type="submit" class="common_btn">PROCEED TO CALCULATE CUTOFF</button>
-
+</div>
 </form>
 
 <h3 id="success-msg" style="text-align: center !important; margin-top:100px !important; display:none; color:#fff"> Enter your marks to calculate the cutoff</h3>
